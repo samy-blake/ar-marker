@@ -17,6 +17,12 @@ h1 {
     font-size: 1.8em;
     text-align: center;
     color: #fc5c65;
+    padding: 25px 0;
+}
+
+h2 {
+    text-align: center;
+    padding: 25px 0;
 }
 
 #selectionlist a, a:visited, a:hover {
@@ -82,4 +88,13 @@ a, a:visited, a:hover {
     width: 100%;
     top: 0;left: 0;
     height: 100%;
+}
+
+#meon {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    text-align: center;
 }

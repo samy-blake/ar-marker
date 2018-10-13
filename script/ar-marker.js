@@ -12,11 +12,13 @@ let renderer,
     container;
 
 let arSource,
-    arContext,
+    arContext,markerControls,
     arMarker = [];
 
-let
-    mesh;
+let mesh, i;
+let patternArray = ["hiro", "dele", "dele_qr"];
+let colorArray   = [0xff0000, 0x0066cc, 0xffff00];
+let loader, texture, geometry, material;
 
 window.onload = function () {
     if (context && Object.prototype.toString.call(context) === '[object String]' && context === 'camera') {
@@ -31,25 +33,68 @@ window.onload = function () {
 function init(){
     container = cont_cam;
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     scene = new THREE.Scene();
+    let ambientLight = new THREE.AmbientLight( 0xcccccc, 0.5 );
+    scene.add( ambientLight );
+
     camera = new THREE.Camera();
+    scene.add(camera);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
     renderer.setClearColor(0x000000, 0);
     renderer.setSize(window.innerWidth, window.innerHeight);
-
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0px';
+    renderer.domElement.style.left = '0px';
     container.appendChild(renderer.domElement);
-    scene.add(camera);
+
     scene.visible = false;
 
 
-    mesh = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({
-        color: 'red',/*0xFF00FF,*/
-        transparent: false,
-        opacity: 0.7
-    }));
-    scene.add(mesh);
+    ////////////////////////////////////////////////////////////
+    // setup arToolkitContext
+    ////////////////////////////////////////////////////////////
+    // create atToolkitContext
+    arContext = new THREEx.ArToolkitContext({
+        cameraParametersUrl: './model/camera_para.dat',
+        detectionMode: 'mono',
+    });
 
+    // copy projection matrix to camera when initialization complete
+    arContext.init(function onCompleted(){
+        camera.projectionMatrix.copy(arContext.getProjectionMatrix());
+    });
+
+
+
+
+    ////////////////////////////////////////////////////////////
+    // setup markerRoots
+    ////////////////////////////////////////////////////////////
+    // build markerControls
+    for (i = 0; i < 3; i++)
+    {
+        let markerRoot = new THREE.Group();
+        let markerControls = new THREEx.ArMarkerControls(arContext, markerRoot, {
+            type : 'pattern',
+            patternUrl : "./marker/" + patternArray[i] + ".patt",
+        });
+
+        if (i==1) {
+            loader = new THREE.TextureLoader();
+            texture = loader.load( 'images/96.png' );
+            geometry = new THREE.PlaneBufferGeometry(1, 1, 4, 4);
+            material = new THREE.MeshBasicMaterial({map:texture, transparent: false, opacity: 1});
+        } else {
+            geometry = new THREE.CubeGeometry(1.25, 1.25, 1.25);
+            material = new THREE.MeshBasicMaterial({color: colorArray[i], transparent: true, opacity: 0.5});
+        }
+        let mesh = new THREE.Mesh(geometry, material);
+        mesh.position.y = 1.25/2;
+        markerRoot.add( mesh );
+        scene.add(markerRoot);
+    }
 
 
 
@@ -57,33 +102,6 @@ function init(){
     arSource = new THREEx.ArToolkitSource({
         sourceType : 'webcam',
     });
-
-    arContext = new THREEx.ArToolkitContext({
-        cameraParametersUrl: './model/camera_para.dat',
-        detectionMode: 'mono',
-    });
-
-    arMarker[0] = new THREEx.ArMarkerControls(arContext, camera, {
-        type : 'pattern',
-        patternUrl : './marker/hiro.patt',
-        changeMatrixMode: 'cameraTransformMatrix'
-    });
-
-    arMarker[1] = new THREEx.ArMarkerControls(arContext, camera, {
-        type : 'pattern',
-        patternUrl : './marker/dele.patt',
-        changeMatrixMode: 'cameraTransformMatrix'
-    });
-
-    arMarker[2] = new THREEx.ArMarkerControls(arContext, camera, {
-        type : 'pattern',
-        patternUrl : './marker/dele_qr.patt',
-        changeMatrixMode: 'cameraTransformMatrix'
-    });
-
-
-
-
 
     /* handle */
     arSource.init(function(){
@@ -94,15 +112,8 @@ function init(){
 
     });
 
-    arContext.init(function onCompleted(){
-
-        camera.projectionMatrix.copy(arContext.getProjectionMatrix());
-
-    });
-
 
     render();
-
 }
 
 
