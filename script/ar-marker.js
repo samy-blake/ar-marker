@@ -5,7 +5,7 @@ let searchParams = new URLSearchParams(url.search);
 let context = searchParams.get('show');
 let cont_main = document.getElementById("main");
 let cont_cam = document.getElementById("camera");
-let ha;
+
 let renderer,
     scene,
     camera,

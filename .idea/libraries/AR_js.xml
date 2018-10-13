@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="AR.js" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/vendor/ar/1.6.2" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/vendor/ar/1.6.2" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

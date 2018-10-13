@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Three.js" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/vendor/three/r97" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/vendor/three/r97" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>
